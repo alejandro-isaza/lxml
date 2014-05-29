@@ -3,6 +3,8 @@
 lxml is a C++ wrapper for the SAX interface of [Libxml2](http://xmlsoft.org/). One of its main features is that there is no bolerplate involved. Just define your SAXHandler subclass and invoke the parser:
 
 ```cpp
+#include "lxml.h"
+//...
 MyHandler handler;
 bool result = parse(stream, filename, handler);
 ```
