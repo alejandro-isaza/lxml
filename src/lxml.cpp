@@ -123,6 +123,11 @@ static xmlSAXHandler __sax_handler = {
     error,                      // serror
 };
 
+bool parse(std::istream& is, const std::string& filename, RecursiveHandler& handler) {
+    lxml::RootRecursiveHandler rootHandler(&handler);
+    return parse(is, filename, rootHandler);
+}
+
 bool parse(std::istream& is, const std::string& filename, SAXHandler& handler) {
     if (!is)
         return false;

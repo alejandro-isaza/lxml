@@ -56,6 +56,19 @@ namespace lxml {
  @return `true` if parsing is successful, `false` if there is an error
          parsing.
  */
+
 bool parse(std::istream& is, const std::string& filename, SAXHandler& handler);
+
+/**
+ Parse an XML stream delivering SAX events recursively to handlers.
+
+ @param is       The input stream with XML data.
+ @param filename The filename to use when generating error messages.
+ @param handler  The recursive SAX event handler.
+
+ @return `true` if parsing is successful, `false` if there is an error
+ parsing.
+ */
+bool parse(std::istream& is, const std::string& filename, RecursiveHandler& handler);
 
 }
