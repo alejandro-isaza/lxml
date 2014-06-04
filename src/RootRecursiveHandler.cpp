@@ -23,41 +23,50 @@
 
 namespace lxml {
 
-RootRecursiveHandler::RootRecursiveHandler(RecursiveHandler* rootHandler) {
+RootRecursiveHandler::RootRecursiveHandler(RecursiveHandler* rootHandler) : _rootHandler(rootHandler) {
     assert(rootHandler != 0);
-    _handlerStack.push_back(rootHandler);
 }
 
 void RootRecursiveHandler::startDocument() {
-    assert(_handlerStack.size() == 1);
+    assert(_handlerStack.empty());
 }
 
 void RootRecursiveHandler::endDocument() {
-    assert(_handlerStack.size() == 1);
+    assert(_handlerStack.empty());
 }
 
 void RootRecursiveHandler::startElement(const QName& qname, const NamespaceMap& namespaces, const AttributeMap& attributes) {
-    RecursiveHandler* handler = _handlerStack.back();
-    RecursiveHandler* startSubElement = 0;
-    if (handler) {
-        startSubElement = handler->startSubElement(qname);
-        if (startSubElement)
-            startSubElement->startElement(qname, attributes);
+    if (_handlerStack.empty()) {
+        // Root element
+        _rootHandler->startElement(qname, attributes);
+        _handlerStack.push_back(_rootHandler);
+    } else {
+        RecursiveHandler* handler = _handlerStack.back();
+        RecursiveHandler* childHandler = 0;
+        if (handler) {
+            childHandler = handler->startSubElement(qname);
+            if (childHandler)
+                childHandler->startElement(qname, attributes);
+        }
+        _handlerStack.push_back(childHandler);
     }
-    _handlerStack.push_back(startSubElement);
+
     _contents.emplace_back();
 }
 
 void RootRecursiveHandler::endElement(const QName& qname) {
-    RecursiveHandler* startSubElement = _handlerStack.back();
-    if (startSubElement)
-        startSubElement->endElement(qname, _contents.back());
-    _handlerStack.pop_back();
-    
     RecursiveHandler* handler = _handlerStack.back();
     if (handler)
-        handler->endSubElement(qname, startSubElement);
+        handler->endElement(qname, _contents.back());
+
+    _handlerStack.pop_back();
     _contents.pop_back();
+
+    if (!_handlerStack.empty()) {
+        RecursiveHandler* parentHandler = _handlerStack.back();
+        if (parentHandler)
+            parentHandler->endSubElement(qname, handler);
+    }
 }
 
 void RootRecursiveHandler::characters(const char* chars, std::size_t length) {

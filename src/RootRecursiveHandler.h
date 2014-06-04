@@ -48,6 +48,7 @@ public:
     virtual void error(const xmlError& error);
     
 private:
+    RecursiveHandler* _rootHandler;
     std::vector<RecursiveHandler*> _handlerStack;
     std::vector<std::string> _contents;
 };
