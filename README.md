@@ -87,10 +87,30 @@ void NodeHandler::endSubElement(const lxml::QName& qname, RecursiveHandler* hand
 
 Every time we detect a new element we reset the `_result` to a new instance of `Node` and set its parent. When the closing tag is found, we capture the text contents. When a sub-elemen tag is found, we create a new `NodeHanlder` to handle this sub-element and initialize its parent node to be the current `_result`. Finally when the sub-element finishes we add the sub-handler's result to the collection of children.
 
-To use the parser just do
+To use the parser just put this in your `main.cpp` file
 ```cpp
-NodeHandler handler;
-bool success = lxml::parse(stream, filename, handler);
+#include <fstream>
+#include <iostream>
+#include <lxml.h>
+
+#include "NodeHandler.h"
+
+int main(int argc, const char * argv[]) {
+    static const char* filename = "note.xml";
+    std::ifstream stream(filename);
+
+    NodeHandler handler;
+    bool success = lxml::parse(stream, filename, handler);
+
+    if (success) {
+        std::cout << "Root node is a " << handler.result()->name
+            << " with " << handler.result()->children.size() << " children\n";
+        return 0;
+    }  else {
+        std::cout << "Error parsing file\n";
+        return 1;
+    }
+}
 ```
 
 That's all you need to do to parse arbitrary XML documents into a DOM tree. But the real power of lxml is having different handlers for different elements. For instance having a `DateHandler` for dates, `IntegerHandler` for integers and custom class handlers for model objects.
