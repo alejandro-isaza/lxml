@@ -39,7 +39,7 @@ public:
 };
 ```
 
-The first step is to write a custom recursive handler. Recursive handlers only need to worry about a single element in the XML document tree. Here is how or handler looks like:
+The first step is to write a custom recursive handler. Recursive handlers only need to worry about a single element in the XML document tree. Here is how our handler looks like:
 
 ```cpp
 class NodeHandler : public lxml::BaseRecursiveHandler<std::unique_ptr<Node>> {
@@ -58,7 +58,7 @@ private:
 };
 ```
 
-We keep a reference to the parent node so that we can set the parent to any nodes that we build at this level in the tree. We also have a pointer to a sub-handler that we are going to create on-demand. Now here is the implementation:
+Inheriting from `BaseRecursiveHandler` gives us a `_result` property and getters for convenience. We keep a reference to the parent node so that we can set the parent to any nodes that we build at this level in the tree. We also have a pointer to a sub-handler that we are going to create on-demand. Now here is the implementation:
 
 ```cpp
 NodeHandler::NodeHandler() : _parentNode() {}
@@ -94,9 +94,9 @@ To do this you would detect the kind of element and return an appropriate handle
 ```cpp
 lxml::RecursiveHandler* NodeHandler::startSubElement(const lxml::QName& qname) {
     if (strcmp(qname.localName(), kDateTag) == 0)
-      return _dateHandler;
+        return _dateHandler;
     else if (strcmp(qname.localName(), kPersonTag) == 0)
-      return _personHandler;
+        return _personHandler;
 
     // Ignore unrecognized sub-elements
     return 0;
