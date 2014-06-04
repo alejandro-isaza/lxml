@@ -7,7 +7,7 @@ LDLIBS = -lxml2 -lboost_unit_test_framework-mt
 SRC_EXT    = cpp
 BUILD_PATH = ../build
 BIN_NAME   = test-runner
-LIB        = ../liblxml.a
+LIB        = ../src/liblxml.a
 
 SRCS = $(wildcard *.$(SRC_EXT))
 OBJS = $(SRCS:%.$(SRC_EXT)=$(BUILD_PATH)/%.o)
@@ -30,7 +30,7 @@ $(BIN_NAME): $(OBJS) $(LIB)
 
 # Main library dependency
 $(LIB):
-	$(MAKE) -C ../src $@
+	$(MAKE) -C ../src liblxml.a
 
 clean:
 	rm -f $(OBJS) $(DEPS) $(BIN_NAME)
