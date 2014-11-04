@@ -18,9 +18,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#include "lxml.h"
-#include <sstream>
+#include <lxml/lxml.h>
 #include <boost/test/unit_test.hpp>
+#include <sstream>
 
 using namespace lxml;
 
