@@ -68,6 +68,7 @@ NodeHandler::NodeHandler(Node* parentNode) : _parentNode(parentNode) {}
 void NodeHandler::startElement(const lxml::QName& qname, const AttributeMap& attributes) {
     _result.reset(new Node(qname.localName()));
     _result->parent = _parentNode;
+    _subHandler.reset();
 }
 
 void NodeHandler::endElement(const lxml::QName& qname, const std::string& contents) {
@@ -101,15 +102,16 @@ int main(int argc, const char * argv[]) {
 
     NodeHandler handler;
     bool success = lxml::parse(stream, filename, handler);
-
-    if (success) {
-        std::cout << "Root node is a " << handler.result()->name
-            << " with " << handler.result()->children.size() << " children\n";
-        return 0;
-    }  else {
+    if (!success) {
         std::cout << "Error parsing file\n";
         return 1;
     }
+    
+    auto& rootNode = handler.result();
+    std::cout << "Root node is a " << rootNode->name
+        << " with " << rootNode->children.size() << " children\n";
+    
+    return 0;
 }
 ```
 
