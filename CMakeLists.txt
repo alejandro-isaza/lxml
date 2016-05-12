@@ -21,6 +21,7 @@ file(GLOB TESTS_SRC "tests/*.cpp")
 add_executable(lxml_tester ${TESTS_SRC})
 
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
 target_link_libraries(lxml_tester lxml ${LIBXML2_LIBRARIES} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
 add_test(lxml_tester ${EXECUTABLE_OUTPUT_PATH}/lxml_tester)
